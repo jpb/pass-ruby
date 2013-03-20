@@ -44,11 +44,9 @@ module Pass
     @@api_version
   end
 
-  # ------------------------------------------------------------------------
-
   def self.request(method, url, api_key, params={}, headers={})
     api_key ||= @@api_key
-    raise AuthenticationError.new('No API key provided.  (HINT: set your API key using "Pass.api_key = <API-KEY>".  You can generate API keys from the Pass web interface.  See https://stripe.com/api for details, or email support@stripe.com if you have any questions.)') unless api_key
+    raise AuthenticationError.new('No API key provided.  (HINT: set your API key using "Pass.api_key = <API-KEY>".') unless api_key
 
     if !verify_ssl_certs
       unless @no_verify
@@ -75,7 +73,7 @@ module Pass
       :lang => 'ruby',
       :lang_version => lang_version,
       :platform => RUBY_PLATFORM,
-      :publisher => 'stripe',
+      :publisher => 'pass',
       :uname => uname
     }
 
@@ -94,10 +92,10 @@ module Pass
     end
 
     begin
-      headers = { :x_stripe_client_user_agent => Pass::JSON.dump(ua) }.merge(headers)
+      headers = { :x_pass_client_user_agent => Pass::JSON.dump(ua) }.merge(headers)
     rescue => e
       headers = {
-        :x_stripe_client_raw_user_agent => ua.inspect,
+        :x_pass_client_raw_user_agent => ua.inspect,
         :error => "#{e} (#{e.class})"
       }.merge(headers)
     end
@@ -109,7 +107,7 @@ module Pass
     }.merge(headers)
 
     if self.api_version
-      headers[:stripe_version] = self.api_version
+      headers[:pass_version] = self.api_version
     end
 
     opts = {
