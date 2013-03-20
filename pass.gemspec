@@ -9,7 +9,8 @@ spec = Gem::Specification.new do |s|
   s.description = 'Pass is the easiest way to login online.'
   s.authors = ['James Brennan']
   s.email = ['james@jamesbrennan.ca']
-  s.homepage = 'https://pass.jamesbrennan.ca'
+  s.homepage = 'http://pass.jamesbrennan.ca'
+  s.executables = 'pass-console'
   s.require_paths = %w{lib}
 
   s.add_dependency('rest-client', '~> 1.4')

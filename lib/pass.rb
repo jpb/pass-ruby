@@ -1,5 +1,24 @@
+# Pass Ruby API
 
+require 'cgi'
+require 'set'
+require 'openssl'
 require 'rest_client'
+require 'multi_json'
+
+# Version
+require 'pass/version'
+
+# API
+require 'pass/session'
+
+# Errors
+require 'pass/errors/stripe_error'
+require 'pass/errors/api_error'
+require 'pass/errors/api_connection_error'
+require 'pass/errors/card_error'
+require 'pass/errors/invalid_request_error'
+require 'pass/errors/authentication_error'
 
 module Pass
   @@ssl_bundle_path = File.join(File.dirname(__FILE__), 'data/ca-certificates.crt')
