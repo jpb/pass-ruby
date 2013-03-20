@@ -10,10 +10,14 @@ require 'multi_json'
 require 'pass/version'
 
 # API
+require 'pass/util'
+require 'pass/json'
+require 'pass/stripe_object'
+require 'pass/api_resource'
 require 'pass/session'
 
 # Errors
-require 'pass/errors/stripe_error'
+require 'pass/errors/pass_error'
 require 'pass/errors/api_error'
 require 'pass/errors/api_connection_error'
 require 'pass/errors/card_error'
