@@ -9,10 +9,13 @@ require 'multi_json'
 # Version
 require 'pass/version'
 
+# API operations
+require 'pass/api_operations/create'
+
 # API
 require 'pass/util'
 require 'pass/json'
-require 'pass/stripe_object'
+require 'pass/pass_object'
 require 'pass/api_resource'
 require 'pass/session'
 
@@ -20,7 +23,6 @@ require 'pass/session'
 require 'pass/errors/pass_error'
 require 'pass/errors/api_error'
 require 'pass/errors/api_connection_error'
-require 'pass/errors/card_error'
 require 'pass/errors/invalid_request_error'
 require 'pass/errors/authentication_error'
 
