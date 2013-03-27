@@ -2,15 +2,15 @@ module Pass
   class PassObject
     include Enumerable
 
-    attr_accessor :api_key
-    @@permanent_attributes = Set.new([:api_key, :id])
+    attr_accessor :api_token
+    @@permanent_attributes = Set.new([:api_token, :id])
 
     # The default :id method is deprecated and isn't useful to us
     if method_defined?(:id)
       undef :id
     end
 
-    def initialize(id=nil, api_key=nil)
+    def initialize(id=nil, api_token=nil)
       # parameter overloading!
       if id.kind_of?(Hash)
         @retrieve_options = id.dup
@@ -20,7 +20,7 @@ module Pass
         @retrieve_options = {}
       end
 
-      @api_key = api_key
+      @api_token = api_token
       @values = {}
       # This really belongs in APIResource, but not putting it there allows us
       # to have a unified inspect method
@@ -29,9 +29,9 @@ module Pass
       self.id = id if id
     end
 
-    def self.construct_from(values, api_key=nil)
-      obj = self.new(values[:id], api_key)
-      obj.refresh_from(values, api_key)
+    def self.construct_from(values, api_token=nil)
+      obj = self.new(values[:id], api_token)
+      obj.refresh_from(values, api_token)
       obj
     end
 
@@ -44,8 +44,8 @@ module Pass
       "#<#{self.class}:0x#{self.object_id.to_s(16)}#{id_string}> JSON: " + Pass::JSON.dump(@values, :pretty => true)
     end
 
-    def refresh_from(values, api_key, partial=false)
-      @api_key = api_key
+    def refresh_from(values, api_token, partial=false)
+      @api_token = api_token
 
       removed = partial ? Set.new : Set.new(@values.keys - values.keys)
       added = Set.new(values.keys - @values.keys)
@@ -63,7 +63,7 @@ module Pass
         @unsaved_values.delete(k)
       end
       values.each do |k, v|
-        @values[k] = Util.convert_to_pass_object(v, api_key)
+        @values[k] = Util.convert_to_pass_object(v, api_token)
         @transient_values.delete(k)
         @unsaved_values.delete(k)
       end

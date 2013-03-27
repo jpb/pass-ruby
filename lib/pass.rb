@@ -28,7 +28,7 @@ require 'pass/errors/authentication_error'
 
 module Pass
   @@ssl_bundle_path = File.join(File.dirname(__FILE__), 'data/ca-certificates.crt')
-  @@api_key = nil
+  @@api_token = nil
   @@api_base = 'http://api.service.localhost:3000'
   @@verify_ssl_certs = true
   @@api_version = nil
@@ -37,12 +37,12 @@ module Pass
     @@api_base + url
   end
 
-  def self.api_key=(api_key)
-    @@api_key = api_key
+  def self.api_token=(api_token)
+    @@api_token = api_token
   end
 
-  def self.api_key
-    @@api_key
+  def self.api_token
+    @@api_token
   end
 
   def self.api_base=(api_base)
@@ -69,9 +69,9 @@ module Pass
     @@api_version
   end
 
-  def self.request(method, url, api_key, params={}, headers={})
-    api_key ||= @@api_key
-    raise AuthenticationError.new('No API key provided.  (HINT: set your API key using "Pass.api_key = <API-KEY>".') unless api_key
+  def self.request(method, url, api_token, params={}, headers={})
+    api_token ||= @@api_token
+    raise AuthenticationError.new('No API token provided.  (HINT: set your API token using "Pass.api_token = <API-TOKEN>".') unless api_token
 
     if !verify_ssl_certs
       unless @no_verify
@@ -127,7 +127,7 @@ module Pass
 
     headers = {
       :user_agent => "Pass/v1 RubyBindings/#{Pass::VERSION}",
-      :authorization => "Token #{api_key}",
+      :authorization => "Token #{api_token}",
       :content_type => 'application/x-www-form-urlencoded',
       :accept => 'application/vnd.pass.v1'
     }.merge(headers)
@@ -178,7 +178,7 @@ module Pass
     end
 
     resp = Util.symbolize_names(resp)
-    [resp, api_key]
+    [resp, api_token]
   end
 
   private

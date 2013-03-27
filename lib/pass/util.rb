@@ -15,19 +15,19 @@ module Pass
       end
     end
 
-    def self.convert_to_pass_object(resp, api_key)
+    def self.convert_to_pass_object(resp, api_token)
       types = {
       }
       case resp
       when Array
-        resp.map { |i| convert_to_pass_object(i, api_key) }
+        resp.map { |i| convert_to_pass_object(i, api_token) }
       when Hash
         # Try converting to a known object class.  If none available, fall back to generic APIResource
         if klass_name = resp[:object]
           klass = types[klass_name]
         end
         klass ||= PassObject
-        klass.construct_from(resp, api_key)
+        klass.construct_from(resp, api_token)
       else
         resp
       end

@@ -19,13 +19,13 @@ module Pass
     end
 
     def refresh
-      response, api_key = Pass.request(:get, url, @api_key, @retrieve_options)
-      refresh_from(response, api_key)
+      response, api_token = Pass.request(:get, url, @api_token, @retrieve_options)
+      refresh_from(response, api_token)
       self
     end
 
-    def self.retrieve(id, api_key=nil)
-      instance = self.new(id, api_key)
+    def self.retrieve(id, api_token=nil)
+      instance = self.new(id, api_token)
       instance.refresh
       instance
     end
