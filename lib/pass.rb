@@ -29,7 +29,7 @@ require 'pass/errors/authentication_error'
 module Pass
   @@ssl_bundle_path = File.join(File.dirname(__FILE__), 'data/ca-certificates.crt')
   @@api_key = nil
-  @@api_base = 'http://api.pass-server.dev'
+  @@api_base = 'http://api.service.localhost:3000'
   @@verify_ssl_certs = true
   @@api_version = nil
 
@@ -127,8 +127,9 @@ module Pass
 
     headers = {
       :user_agent => "Pass/v1 RubyBindings/#{Pass::VERSION}",
-      :authorization => "Bearer #{api_key}",
-      :content_type => 'application/x-www-form-urlencoded'
+      :authorization => "Token #{api_key}",
+      :content_type => 'application/x-www-form-urlencoded',
+      :accept => 'application/vnd.pass.v1'
     }.merge(headers)
 
     if self.api_version
@@ -180,6 +181,62 @@ module Pass
     [resp, api_key]
   end
 
+  private
 
+  def self.execute_request(opts)
+    RestClient::Request.execute(opts)
+  end
+
+  def self.handle_api_error(rcode, rbody)
+    begin
+      error_obj = Pass::JSON.load(rbody)
+      error_obj = Util.symbolize_names(error_obj)
+      error = error_obj[:error] or raise PassError.new # escape from parsing
+    rescue MultiJson::DecodeError, PassError
+      raise APIError.new("Invalid response object from API: #{rbody.inspect} (HTTP response code was #{rcode})", rcode, rbody)
+    end
+
+    case rcode
+    when 400, 404 then
+      raise invalid_request_error(error, rcode, rbody, error_obj)
+    when 401
+      raise authentication_error(error, rcode, rbody, error_obj)
+    when 402
+      raise invalid_request_error(error, rcode, rbody, error_obj)
+    else
+      raise api_error(error, rcode, rbody, error_obj)
+    end
+  end
+
+  def self.invalid_request_error(error, rcode, rbody, error_obj)
+    InvalidRequestError.new(error[:message], error[:param], rcode, rbody, error_obj)
+  end
+
+  def self.authentication_error(error, rcode, rbody, error_obj)
+    AuthenticationError.new(error[:message], rcode, rbody, error_obj)
+  end
+
+  def self.card_error(error, rcode, rbody, error_obj)
+    CardError.new(error[:message], error[:param], error[:code], rcode, rbody, error_obj)
+  end
+
+  def self.api_error(error, rcode, rbody, error_obj)
+    APIError.new(error[:message], rcode, rbody, error_obj)
+  end
+
+  def self.handle_restclient_error(e)
+    case e
+    when RestClient::ServerBrokeConnection, RestClient::RequestTimeout
+      message = "Could not connect to Pass (#{@@api_base}).  Please check your internet connection and try again.  If this problem persists, you should check Pass's service status at https://twitter.com/passstatus, or let us know at support@passauth.net."
+    when RestClient::SSLCertificateNotVerified
+      message = "Could not verify Pass's SSL certificate.  Please make sure that your network is not intercepting certificates.  (Try going to https://api.passauth.net/v1 in your browser.)  If this problem persists, let us know at support@passauth.net."
+    when SocketError
+      message = "Unexpected error communicating when trying to connect to Pass.  HINT: You may be seeing this message because your DNS is not working.  To check, try running 'host passauth.net' from the command line."
+    else
+      message = "Unexpected error communicating with Pass. If this problem persists, let us know at support@passauth.net."
+    end
+    message += "\n\n(Network error: #{e.message})"
+    raise APIConnectionError.new(message)
+  end
 
 end
