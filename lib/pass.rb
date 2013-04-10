@@ -29,7 +29,7 @@ require 'pass/errors/authentication_error'
 module Pass
   @@ssl_bundle_path = File.join(File.dirname(__FILE__), 'data/ca-certificates.crt')
   @@api_token = nil
-  @@api_base = 'http://api.service.localhost:3000'
+  @@api_base = 'https://api.passauth.net'
   @@verify_ssl_certs = true
   @@api_version = nil
 
