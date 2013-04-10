@@ -3,7 +3,7 @@ $:.unshift(File.join(File.dirname(__FILE__), 'lib'))
 require 'pass/version'
 
 spec = Gem::Specification.new do |s|
-  s.name = 'passauth'
+  s.name = 'pass-ruby'
   s.version = Pass::VERSION
   s.summary = 'Ruby bindings for the Pass API'
   s.description = 'Pass is the easiest way to login online.'
