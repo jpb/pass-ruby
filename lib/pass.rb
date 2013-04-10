@@ -11,6 +11,7 @@ require 'pass/version'
 
 # API operations
 require 'pass/api_operations/create'
+require 'pass/api_operations/list'
 
 # API
 require 'pass/util'
@@ -18,6 +19,7 @@ require 'pass/json'
 require 'pass/pass_object'
 require 'pass/api_resource'
 require 'pass/session'
+require 'pass/user'
 
 # Errors
 require 'pass/errors/pass_error'
