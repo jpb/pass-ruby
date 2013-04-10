@@ -3,13 +3,13 @@ $:.unshift(File.join(File.dirname(__FILE__), 'lib'))
 require 'pass/version'
 
 spec = Gem::Specification.new do |s|
-  s.name = 'pass'
+  s.name = 'passauth'
   s.version = Pass::VERSION
   s.summary = 'Ruby bindings for the Pass API'
   s.description = 'Pass is the easiest way to login online.'
   s.authors = ['James Brennan']
   s.email = ['james@jamesbrennan.ca']
-  s.homepage = 'http://pass.jamesbrennan.ca'
+  s.homepage = 'https://passauth.net'
   s.executables = 'pass-console'
   s.require_paths = %w{lib}
 
